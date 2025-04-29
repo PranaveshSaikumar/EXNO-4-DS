@@ -257,7 +257,46 @@ categorical_columns = ['JobType', 'EdType', 'maritalstatus', 'occupation', 'rela
 df[categorical_columns] = df[categorical_columns].astype('category')
 df[categorical_columns]
 ```
-![Uploading image.png…]()
+![image](https://github.com/user-attachments/assets/1bb35dc0-5cc3-4561-92d5-ce553a41db2a)
+
+```
+df[categorical_columns] = df[categorical_columns].apply(lambda x: x.cat.codes)
+df[categorical_columns]
+```
+![image](https://github.com/user-attachments/assets/5ea9d5a7-e2a5-4413-8faa-4a29b7951a44)
+
+```
+X = df.drop(columns=['SalStat'])
+y = df['SalStat']
+logreg = LogisticRegression()
+n_features_to_select = 6
+rfe = RFE(estimator=logreg, n_features_to_select=n_features_to_select)
+rfe.fit(X, y)
+```
+![image](https://github.com/user-attachments/assets/7d4ab35a-2305-40e4-b1bc-9ae1a522c046)
+
+```
+selected_features = X.columns[rfe.support_]
+print("Selected features using RFE:")
+print(selected_features)
+```
+![image](https://github.com/user-attachments/assets/5a1f158a-558d-4a37-aaa5-f1c4070abcd2)
+
+```
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.ensemble import RandomForestClassifier
+X_selected = X[selected_features]
+X_train, X_test, y_train, y_test = train_test_split(X_selected, y, test_size=0.3, random_state=42)
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+y_pred = rf.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model accuracy using Fisher Score selected features: {accuracy}")
+```
+![image](https://github.com/user-attachments/assets/cc434634-62a8-423d-841a-cba208b843be)
+
 
 # RESULT:
-       # INCLUDE YOUR RESULT HERE
+Thus, the given data has been performed using Feature Scaling and Feature Selection process and saved to a file.
+       
